@@ -17,8 +17,7 @@ module Lib =
         
         abstract member ReportServiceCallMetrics: typeName:string * serviceName:string * data:string * startTime:DateTimeOffset * duration:TimeSpan * success:bool -> unit
 
-        abstract member Log: message:string * level:LogLevel * properties:IDictionary<String, String> -> unit
+        abstract member Log: level:LogLevel * message:string  * properties:IDictionary<String, String> -> unit
+
+        abstract member  ReportEvent: eventName:string * properties:IDictionary<string,string> * metrics:System.Collections.Generic.IDictionary<string,double> -> unit
         
-        //abstract submitTaskExecutionRequest: TaskExecutionRequest -> Result<unit, TaskError>
-        //abstract startExecuting: Result<TaskExecution, TaskError>
-        //abstract reportTaskExecutionResult: TaskExecutionResult -> Result<unit, TaskError>

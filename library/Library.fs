@@ -19,5 +19,7 @@ module Lib =
 
         abstract member Log: level:LogLevel * message:string  * properties:IDictionary<String, String> -> unit
 
-        abstract member  ReportEvent: eventName:string * properties:IDictionary<string,string> * metrics:System.Collections.Generic.IDictionary<string,double> -> unit
-        
+        abstract member ReportEvent: eventName:string * properties:IDictionary<string,string> * metrics:System.Collections.Generic.IDictionary<string,double> -> unit
+     
+        abstract member ReportException: ex:Exception * properties:IDictionary<string,string> -> unit
+

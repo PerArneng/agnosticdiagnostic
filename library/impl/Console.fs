@@ -6,7 +6,7 @@ module Console =
     open AgnosticDiagnostic.Formatters
     open System
     open System.Collections.Generic
-    
+   
     type ConsoleDiagnosticLogger(logLevelForEventsIn:LogLevel, logLevelForCallsIn:LogLevel) =
         let logLevelForEvents = logLevelForEventsIn
         let logLevelForCalls = logLevelForCallsIn
@@ -36,6 +36,7 @@ module Console =
                     (sprintf "called '%s' of type '%s'" serviceName typeName) 
                     (dict [ ("data", data); ("startTime", startTime.ToString("u")); ("duration", duration.ToString()) ])
             
+
             member this.ReportEvent(eventName:string, properties:IDictionary<string,string>, metrics:IDictionary<string,double>):unit =
                 
                 let formatMetrict (kv:KeyValuePair<string,double>):string*string =
@@ -45,5 +46,10 @@ module Console =
                 let propertySeq =  properties |> Seq.map (fun kv -> (kv.Key, kv.Value))                                    
                 let props = Seq.append propertySeq metricsStrings
                 this.doLog logLevelForEvents (sprintf "event: '%s'" eventName) (dict props)
-
             
+
+            member this.ReportException(ex:Exception, properties:IDictionary<string,string>):unit =
+                this.doLog LogLevel.Error (sprintf "Exception: %s: %s" (ex.GetType().Name) ex.Message) properties
+                let exString = Formatters.formatException 8 ex
+                printfn "%s" (Formatters.padString 4 "StackTrace:")
+                printfn "%s" exString

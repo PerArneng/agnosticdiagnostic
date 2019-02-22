@@ -10,4 +10,8 @@
     <Compile Include="impl\Console.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AsyncFriendlyStackTrace" Version="1.6.0" />
+  </ItemGroup>
+
 </Project>

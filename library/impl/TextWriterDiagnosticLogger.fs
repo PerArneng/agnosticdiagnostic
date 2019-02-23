@@ -1,27 +1,30 @@
 namespace AgnosticDiagnostic
 
-module Console = 
+module Impl =
 
     open AgnosticDiagnostic.Lib
     open AgnosticDiagnostic.Formatters
     open System
+    open System.IO
     open System.Collections.Generic
    
-    type ConsoleDiagnosticLogger(logLevelForEventsIn:LogLevel, logLevelForCallsIn:LogLevel) =
+    type TextWriterDiagnosticLogger(textWriterIn:TextWriter, logLevelForEventsIn:LogLevel, logLevelForCallsIn:LogLevel) =
+        let writer = textWriterIn
         let logLevelForEvents = logLevelForEventsIn
         let logLevelForCalls = logLevelForCallsIn
 
-        new() = ConsoleDiagnosticLogger(LogLevel.Info, LogLevel.Info)
+        new() = TextWriterDiagnosticLogger(Console.Out, LogLevel.Info, LogLevel.Info)
 
         member this.getCurrentTime:string = DateTime.Now.ToString "u"
         
         member this.doLog (level:LogLevel) (message:string) (properties:IDictionary<String, String>): unit =
            
-                printfn "%s - %s - %s" this.getCurrentTime 
-                    (Formatters.formatLogLevel level) message
+                sprintf "%s - %s - %s" this.getCurrentTime (Formatters.formatLogLevel level) message
+                    |> writer.WriteLine
 
                 if properties.Count > 0 then
-                    printfn "%s" (Formatters.formatStringDict 4 properties)
+                    sprintf "%s" (Formatters.formatStringDict 4 properties)
+                        |> writer.WriteLine
  
 
         interface IDiagnosticSPI with
@@ -51,5 +54,7 @@ module Console =
             member this.ReportException(ex:Exception, properties:IDictionary<string,string>):unit =
                 this.doLog LogLevel.Error (sprintf "Exception: %s: %s" (ex.GetType().Name) ex.Message) properties
                 let exString = Formatters.formatException 8 ex
-                printfn "%s" (Formatters.padString 4 "StackTrace:")
-                printfn "%s" exString
+                sprintf "%s" (Formatters.padString 4 "StackTrace:")
+                    |> writer.WriteLine
+                sprintf "%s" exString
+                    |> writer.WriteLine

@@ -2,12 +2,12 @@
 open System
 
 open AgnosticDiagnostic.Lib
-open AgnosticDiagnostic.Console
+open AgnosticDiagnostic.Impl
 
 [<EntryPoint>]
 let main argv =
 
-    let diag = (new ConsoleDiagnosticLogger()) :> IDiagnosticSPI
+    let diag = (new TextWriterDiagnosticLogger()) :> IDiagnosticSPI
     diag.Log(LogLevel.Info, "Hello",  (dict [ ("a", "a"); ("b", "b"); ("c", "c") ]))
 
 

@@ -7,7 +7,7 @@
   <ItemGroup>
     <Compile Include="Library.fs" />
     <Compile Include="Formatters.fs" />
-    <Compile Include="impl\Console.fs" />
+    <Compile Include="impl\TextWriterDiagnosticLogger.fs" />
   </ItemGroup>
 
   <ItemGroup>

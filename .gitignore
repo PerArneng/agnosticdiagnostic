@@ -5,6 +5,7 @@
 
 .idea/
 .vs/
+build.fsx.lock
 
 # User-specific files
 *.suo

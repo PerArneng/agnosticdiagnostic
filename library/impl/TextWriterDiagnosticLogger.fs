@@ -3,7 +3,7 @@ namespace AgnosticDiagnostic
 module Impl =
 
     open AgnosticDiagnostic.Lib
-    open AgnosticDiagnostic.Formatters
+    open AgnosticDiagnostic
     open System
     open System.IO
     open System.Collections.Generic
@@ -28,16 +28,24 @@ module Impl =
  
 
         interface IDiagnosticSPI with
-                        
+                     
+            
+            member this.Flush() = writer.Flush()
+
         
             member this.Log(level:LogLevel, message:string, properties:IDictionary<String, String>): unit =
                 this.doLog level message properties
             
             
-            member this.ReportServiceCallMetrics(typeName:string, serviceName:string, data:string, startTime:DateTimeOffset, duration:TimeSpan, success:bool) : unit =
+            member this.ReportServiceCallMetrics(typeName:string, serviceName:string, data:string, startTime:DateTimeOffset, duration:TimeSpan, success:bool, properties:IDictionary<string,string>) : unit =
+                let newProperties = Seq.concat [
+                    (properties |> Seq.map (fun kv -> (kv.Key, kv.Value)))
+                    [ ("data", data); ("startTime", startTime.ToString("u")); ("duration", duration.ToString()) ] |> List.toSeq
+                ]
+                
                 this.doLog logLevelForCalls 
                     (sprintf "called '%s' of type '%s'" serviceName typeName) 
-                    (dict [ ("data", data); ("startTime", startTime.ToString("u")); ("duration", duration.ToString()) ])
+                    (dict newProperties)
             
 
             member this.ReportEvent(eventName:string, properties:IDictionary<string,string>, metrics:IDictionary<string,double>):unit =

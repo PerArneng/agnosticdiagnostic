@@ -3,13 +3,23 @@ open System
 
 open AgnosticDiagnostic.Lib
 open AgnosticDiagnostic.Impl
+open Microsoft.ApplicationInsights
+open Microsoft.ApplicationInsights.Extensibility
+open AgnosticDiagnostic.ApplicationInsights
 
 [<EntryPoint>]
 let main argv =
 
- 
+    let config = TelemetryConfiguration.Active; // Reads ApplicationInsights.config file if present
+    config.InstrumentationKey <- "1c4ce61d-aa5a-4dd2-8a18-05490c214e4b"
+    let telemetryClient = new TelemetryClient(config)
+    telemetryClient.InstrumentationKey <- "1c4ce61d-aa5a-4dd2-8a18-05490c214e4b"
+   
+    printfn "telemetryclient created '%s'" telemetryClient.InstrumentationKey
+
     let diag = new DiagnosticManager([
                                         (new TextWriterDiagnosticLogger()) :> IDiagnosticSPI
+                                        (new ApplicationInsightsDiagnosticLogger(telemetryClient)) :> IDiagnosticSPI
                                      ],[("defaultProp", "value")])
 
 
@@ -22,6 +32,8 @@ let main argv =
     diag.Log(LogLevel.Error, "This is an error test")
     diag.ReportEvent("TestEvent", dict [("prop", "val")], dict ["perf", 0.1])
     diag.ReportEvent("TestEvent2")
+
+    diag.Flush
 
     try
         1/0

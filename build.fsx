@@ -33,6 +33,7 @@ Target.create "Build" (fun _ ->
             { defaults with
                 Verbosity = Some(Quiet)
                 Targets = ["Build"]
+                DoRestore = true
                 Properties =
                     [
                         "Optimize", "True"

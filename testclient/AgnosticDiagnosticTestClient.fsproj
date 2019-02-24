@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\library\AgnosticDiagnostic.fsproj" />
+    <ProjectReference Include="..\azureappinsights\AgnosticDiagnostic.ApplicationInsights.fsproj" />
   </ItemGroup>
 
 </Project>

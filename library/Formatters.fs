@@ -4,7 +4,6 @@ module Formatters =
 
     open System.Collections.Generic
     open AgnosticDiagnostic.Lib
-    open System.Numerics
     open System
     open AsyncFriendlyStackTrace
 
@@ -14,7 +13,7 @@ module Formatters =
 
  
     let formatException (indent:int) (ex:Exception):string =
-        let stackTraceString = (AsyncFriendlyStackTrace.ExceptionExtensions.ToAsyncString ex)
+        let stackTraceString = (ExceptionExtensions.ToAsyncString ex)
         
         let padding = String.init indent (fun _ -> " ")
         stackTraceString.Split([| "\r\n"; "\r"; "\n" |], StringSplitOptions.None)
